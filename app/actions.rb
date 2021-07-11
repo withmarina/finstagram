@@ -2,28 +2,6 @@
 #     File.read(File.join('app/views', 'index.html'))
 # end
 
-# get '/' do
-#     "Hello world!"
-#   end
-
-# get '/' do
-#     username = "sharky_j"
-#     avatar_url = "http://naserca.com/images/sharky_j.jpg"
-#     photo_url = "http://naserca.com/images/shark.jpg"
-#     time_ago_in_minutes = 15
-#     like_count = 0
-#     comment_count = 1
-#     comments = [
-#       "sharky_j: Out for the long weekend... rocking the beach bod y'all!"
-#     ]
-  
-#     if time_ago_in_minutes >= 60
-#       "#{time_ago_in_minutes / 60} hours ago"
-#     else
-#       "#{time_ago_in_minutes} minutes ago"
-#     end
-#   end
-
 def humanized_time_ago(time_ago_in_minutes)
     if time_ago_in_minutes >= 120
       "#{time_ago_in_minutes / 60} hours ago"
@@ -74,7 +52,5 @@ def humanized_time_ago(time_ago_in_minutes)
         }]
       }
 
-    # time_ago = humanized_time_ago(finstagram_post[:time_ago_in_minutes])
-    # finstagram_post.to_s
     [finstagram_post_shark, finstagram_post_whale, finstagram_post_marlin].to_s
   end
