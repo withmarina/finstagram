@@ -10,13 +10,13 @@ end
 
 get '/' do
   @finstagram_posts = FinstagramPost.order(created_at: :desc)
-  # @current_user = User.find_by(id: session[:user_id])
+  # @current_user = User.find_by(id: session[:user_id]) ## redundant because of helper method
   erb(:index)
 end
 
-get '/signup' do     # if a user navigates to the path "/signup",
+get '/signup' do     
   @user = User.new   # setup empty @user object
-  erb(:signup)       # render "app/views/signup.erb"
+  erb(:signup)       
 end
 
 get '/login' do
@@ -26,6 +26,16 @@ end
 get '/logout' do
   session[:user_id] = nil
   redirect to('/')
+end
+
+get '/finstagram_posts/new' do
+  @finstagram_post = FinstagramPost.new
+  erb(:"finstagram_posts/new")
+end
+
+get '/finstagram_posts/:id' do
+  @finstagram_post = FinstagramPost.find(params[:id])
+  erb(:"finstagram_posts/show")
 end
 
 post '/signup' do
@@ -61,3 +71,16 @@ end
 # username-password combos for testing:
 # user: a_fish_doesnt_catfish, password: a
 # user: nemo, password: findme
+
+post '/finstagram_posts' do
+  photo_url = params[:photo_url]
+
+  @finstagram_post = FinstagramPost.new({ photo_url: photo_url, user_id: current_user.id }) # instantiate new FinstagramPost
+
+  # if @post validates then save, otherwise print error messages
+  if @finstagram_post.save
+    redirect(to('/'))
+  else
+    erb(:"finstagram_posts/new")
+  end
+end
