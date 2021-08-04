@@ -1,7 +1,3 @@
-# get '/' do
-#     File.read(File.join('app/views', 'index.html'))
-# end
-
 helpers do
   def current_user
     User.find_by(id: session[:user_id])
@@ -10,12 +6,11 @@ end
 
 get '/' do
   @finstagram_posts = FinstagramPost.order(created_at: :desc)
-  # @current_user = User.find_by(id: session[:user_id]) ## redundant because of helper method
   erb(:index)
 end
 
 get '/signup' do     
-  @user = User.new   # setup empty @user object
+  @user = User.new   
   erb(:signup)       
 end
 
@@ -87,17 +82,12 @@ post '/finstagram_posts' do
 end
 
 post '/comments' do
-  # point values from params to variables
   text = params[:text]
   finstagram_post_id = params[:finstagram_post_id]
 
-  # instantiate a comment with those values & assign the comment to the `current_user`
   comment = Comment.new({ text: text, finstagram_post_id: finstagram_post_id, user_id: current_user.id })
-
-  # save the comment
   comment.save
 
-  # `redirect` back to wherever we came from
   redirect(back)
 end
 
