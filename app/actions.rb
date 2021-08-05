@@ -9,28 +9,9 @@ get '/' do
   erb(:index)
 end
 
-get '/signup' do     
-  @user = User.new   
-  erb(:signup)       
-end
-
-get '/login' do
-  erb(:login)
-end
-
-get '/logout' do
-  session[:user_id] = nil
-  redirect to('/')
-end
-
-get '/finstagram_posts/new' do
-  @finstagram_post = FinstagramPost.new
-  erb(:"finstagram_posts/new")
-end
-
-get '/finstagram_posts/:id' do
-  @finstagram_post = FinstagramPost.find(params[:id])
-  erb(:"finstagram_posts/show")
+get '/signup' do     # if a user navigates to the path "/signup",
+  @user = User.new   # setup empty @user object
+  erb(:signup)       # render "app/views/signup.erb"
 end
 
 post '/signup' do
@@ -48,32 +29,40 @@ post '/signup' do
   end
 end
 
+get '/login' do    # when a GET request comes into /login
+  erb(:login)      # render app/views/login.erb
+end
 
 post '/login' do
   username = params[:username]
   password = params[:password]
 
-  @user = User.find_by(username: username) #find user by username
+  user = User.find_by(username: username)  
 
-  if @user && @user.password == password #if user exists and password matches
-    session[:user_id] = @user.id
+  if user && user.password == password
+    session[:user_id] = user.id
     redirect to('/')
   else
     @error_message = "Login failed."
     erb(:login)
   end
 end
-# username-password combos for testing:
-# user: a_fish_doesnt_catfish, password: a
-# user: nemo, password: findme
-# user: turtle, password: squirtle
+
+get '/logout' do
+  session[:user_id] = nil
+  redirect to('/')
+end
+
+get '/finstagram_posts/new' do
+  @finstagram_post = FinstagramPost.new
+  erb(:"finstagram_posts/new")
+end
 
 post '/finstagram_posts' do
   photo_url = params[:photo_url]
 
-  @finstagram_post = FinstagramPost.new({ photo_url: photo_url, user_id: current_user.id }) # instantiate new FinstagramPost
+  @finstagram_post = FinstagramPost.new({ photo_url: photo_url, user_id: current_user.id })
 
-  # if @post validates then save, otherwise print error messages
   if @finstagram_post.save
     redirect(to('/'))
   else
@@ -81,13 +70,23 @@ post '/finstagram_posts' do
   end
 end
 
+get '/finstagram_posts/:id' do
+  @finstagram_post = FinstagramPost.find(params[:id])   # find the finstagram post with the ID from the URL
+  erb(:"finstagram_posts/show")               # render app/views/finstagram_posts/show.erb
+end
+
 post '/comments' do
+  # point values from params to variables
   text = params[:text]
   finstagram_post_id = params[:finstagram_post_id]
 
+  # instantiate a comment with those values & assign the comment to the `current_user`
   comment = Comment.new({ text: text, finstagram_post_id: finstagram_post_id, user_id: current_user.id })
+
+  # save the comment
   comment.save
 
+  # `redirect` back to wherever we came from
   redirect(back)
 end
 
@@ -98,7 +97,7 @@ post '/likes' do
   like.save
 
   redirect(back)
-end 
+end
 
 delete '/likes/:id' do
   like = Like.find(params[:id])
