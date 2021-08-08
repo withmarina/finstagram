@@ -1,2 +1,3 @@
 image:
-  file: .gitpod.Dockerfile
+  # file: .gitpod.Dockerfile
+  file: /.gitpod.Dockerfile # new line for deploying
